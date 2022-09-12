@@ -1,0 +1,39 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: knight-site
+spec:
+  type: ClusterIP
+  selector:
+    app: knight-site
+  ports:
+    - protocol: "TCP"
+      port: 80
+      targetPort: 3000
+#   type: LoadBalancer
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: knight-site
+spec:
+  selector:
+    matchLabels:
+      app: knight-site
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        app: knight-site
+    spec:
+      containers:
+      - name: knight-site
+        image: docker.io/ligulfzhou53/knight-site
+        imagePullPolicy: Always
+        env:
+          - name: MainnetContractAddress
+            value: "0x398d6b3F278247B5CE1f2b38a16Cc1302546DFb8"
+          - name: RinkebyContractAddress
+            value: "0x9c886f1e9c25b35573f31129182fcff92198cd9a"
+        ports:
+        - containerPort: 3000
